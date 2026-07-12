@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body { width: 320px; font-family: sans-serif; padding: 12px; }
+    button { width: 100%; padding: 8px; margin-top: 8px; cursor: pointer; }
+    #result { margin-top: 12px; font-size: 13px; }
+    .laptop-slot { border: 1px solid #ccc; padding: 6px; margin-top: 6px; border-radius: 4px; }
+  </style>
+</head>
+<body>
+  <h3>💻 SpecScout</h3>
+  <button id="addBtn">➕ Add this laptop from current tab</button>
+  <div id="added"></div>
+
+  <select id="useCase">
+    <option>General use</option>
+    <option>Coding</option>
+    <option>Gaming</option>
+    <option>Video editing</option>
+    <option>Student</option>
+    <option>Business</option>
+  </select>
+  
+  <button id="clearBtn">Clear all</button>
+  <button id="compareBtn">🔍 Compare</button>
+  <div id="result"></div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

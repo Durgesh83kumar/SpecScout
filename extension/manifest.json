@@ -1,0 +1,19 @@
+{
+  "manifest_version": 3,
+  "name": "SpecScout — AI Laptop Comparison",
+  "version": "1.0",
+  "description": "Compare laptops with AI directly from Flipkart product pages.",
+  "permissions": ["activeTab", "scripting", "storage"],
+  "host_permissions": [
+    "http://127.0.0.1:8000/*",
+    "https://www.flipkart.com/*",
+    "https://dl.flipkart.com/*",
+    "https://flipkart.com/*"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "48": "icon.png"
+    }
+  }
+}
