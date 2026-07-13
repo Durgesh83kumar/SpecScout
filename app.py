@@ -17,8 +17,6 @@ with st.sidebar:
         st.error("No API key found. Add GROQ_API_KEY to your .env file.")
 
 
-
-
 def laptop_input(label):
     mode = st.radio(f"{label} input", ["Paste specs", "Paste URL"], horizontal=True, key=f"{label}_mode")
     if mode == "Paste specs":
@@ -27,7 +25,10 @@ def laptop_input(label):
     else:
         url = st.text_input(f"{label} product URL", key=f"{label}_url")
         if url:
-            return fetch_specs_from_url(url)
+            name, specs, error = fetch_specs_from_url(url)
+            if error:
+                st.warning(f"⚠️ {label}: {error}")
+            return name, specs
         return label, ""
 
 
@@ -48,14 +49,13 @@ use_case = st.selectbox(
 )
 
 
-
 if st.button("🔍 Compare Laptops"):
     laptops = [laptop1, laptop2, laptop3]
     names = [name1, name2, name3]
     filled = [l for l in laptops if l.strip()]
 
     if len(filled) < 2:
-        st.error("Add at least 2 laptops (paste specs or a URL).")
+        st.error("Add at least 2 laptops (paste specs or a URL). If you used 'Paste URL', check the warning above — the fetch may have failed.")
     else:
         with st.spinner("Comparing..."):
             result = get_comparison(api_key_input, laptops, names, use_case)

@@ -17,9 +17,17 @@ USE_CASE_CRITERIA = {
 
 def fetch_specs_from_url(url):
     """Fetch a product page server-side and extract a clean name + spec text.
-    Used by both the Streamlit app and the browser extension's backend."""
+    Used by both the Streamlit app and the browser extension's backend.
+    Returns (name, specs, error) — error is None on success."""
+    resp = None
     try:
-        headers = {"User-Agent": "Mozilla/5.0"}
+        headers = {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+                          "(KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36",
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+            "Accept-Language": "en-US,en;q=0.9",
+            "Referer": "https://www.google.com/",
+        }
         resp = requests.get(url, headers=headers, timeout=10)
         resp.raise_for_status()
         soup = BeautifulSoup(resp.text, "html.parser")
@@ -38,9 +46,18 @@ def fetch_specs_from_url(url):
         specs = "\n".join(t.get_text(separator="\n", strip=True) for t in tables) if tables \
                 else soup.get_text(separator="\n", strip=True)[:3000]
 
-        return name, specs
-    except Exception:
-        return "Unknown Laptop", ""
+        if not specs.strip():
+            return name, "", "Page fetched but no specs found — Flipkart may have blocked this request."
+
+        return name, specs, None
+
+    except requests.exceptions.HTTPError:
+        status = resp.status_code if resp is not None else "unknown"
+        return "Unknown Laptop", "", f"HTTP error {status} — Flipkart likely blocked this request."
+    except requests.exceptions.RequestException as e:
+        return "Unknown Laptop", "", f"Network error: {e}"
+    except Exception as e:
+        return "Unknown Laptop", "", f"Unexpected error: {e}"
 
 
 def build_prompt(laptops, names, use_case):
