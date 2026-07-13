@@ -41,33 +41,42 @@ def health_check():
 
 @app.post("/compare")
 def compare(req: CompareRequest):
-    api_key = os.getenv("GROQ_API_KEY")
-    if not api_key:
-        return {"error": "GROQ_API_KEY not set on server"}
+    try:
+        api_key = os.getenv("GROQ_API_KEY")
+        if not api_key:
+            return {"error": "GROQ_API_KEY not set on server"}
 
-    filled = [l for l in req.laptops if l.strip()]
-    if len(filled) < 2:
-        return {"error": "Need at least 2 laptops with specs"}
+        filled = [l for l in req.laptops if l.strip()]
+        if len(filled) < 2:
+            return {"error": "Need at least 2 laptops with specs"}
 
-    result = get_comparison(api_key, req.laptops, req.names, req.use_case)
-    return result
+        result = get_comparison(api_key, req.laptops, req.names, req.use_case)
+        return result
+    except Exception as e:
+        return {"error": f"Server error in /compare: {str(e)}"}
 
 
 @app.post("/compare-urls")
 def compare_urls(req: CompareUrlsRequest):
-    api_key = os.getenv("GROQ_API_KEY")
-    if not api_key:
-        return {"error": "GROQ_API_KEY not set on server"}
+    try:
+        api_key = os.getenv("GROQ_API_KEY")
+        if not api_key:
+            return {"error": "GROQ_API_KEY not set on server"}
 
-    names, specs = [], []
-    for url in req.urls:
-        name, spec_text = fetch_specs_from_url(url)
-        names.append(name)
-        specs.append(spec_text)
+        names, specs = [], []
+        for url in req.urls:
+            name, spec_text, error = fetch_specs_from_url(url)
+            if error:
+                # Skip this URL but keep going — don't crash the whole request
+                continue
+            names.append(name)
+            specs.append(spec_text)
 
-    filled = [s for s in specs if s.strip()]
-    if len(filled) < 2:
-        return {"error": "Could not extract usable specs from at least 2 of the given URLs"}
+        filled = [s for s in specs if s.strip()]
+        if len(filled) < 2:
+            return {"error": "Could not extract usable specs from at least 2 of the given URLs"}
 
-    result = get_comparison(api_key, specs, names, req.use_case)
-    return result
+        result = get_comparison(api_key, specs, names, req.use_case)
+        return result
+    except Exception as e:
+        return {"error": f"Server error in /compare-urls: {str(e)}"}
