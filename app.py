@@ -23,6 +23,7 @@ def laptop_input(label):
         specs = st.text_area(f"{label} specs", height=180, key=f"{label}_text")
         return label, specs
     else:
+        st.caption("⚠️ URL auto-fetch may be blocked on cloud hosting due to Flipkart's anti-bot protection. Works reliably when run locally.")
         url = st.text_input(f"{label} product URL", key=f"{label}_url")
         if url:
             name, specs, error = fetch_specs_from_url(url)
