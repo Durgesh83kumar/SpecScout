@@ -235,7 +235,7 @@ criteria added, verdict/summary consistency enforced, robust JSON parsing.
 Streamlit web app deployed and publicly accessible at
 [specscout-tpy7mmkehn9cpudbjui5th.streamlit.app](https://specscout-tpy7mmkehn9cpudbjui5th.streamlit.app/)
 
-🔜 **Phase 4 — Planned**
+🔮 **Phase 4 — Future work**
 Generalize beyond laptops to other electronics categories (phones,
 earbuds, monitors, etc.), and extend the extension/backend to other retail
 sites beyond Flipkart.
